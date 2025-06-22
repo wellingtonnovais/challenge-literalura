@@ -18,14 +18,18 @@ public class CallApi implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         var consumoApi = new ConsumoApi();
-        var json = consumoApi.recebeDados(getUrl() + "dom+casmurro");
+        var json = consumoApi.recebeDados(getUrl());
         var coversorDeDados = new ConversorDeDados();
         RespostaApi resposta = coversorDeDados.obterDadodos(json, RespostaApi.class);
 
         DadosLivro livro = resposta.resultado().get(0);
         DadosAutores autores = livro.autores().get(0);
-        System.out.println(livro.titulo());
-        System.out.println(autores.nome());
+        String indioma = livro.lingagens().get(0);
+
+        System.out.println("Titulo: " + livro.titulo());
+        System.out.println("Autor: " + autores.nome());
+        System.out.println("Indioma: " + indioma);
+        System.out.println("Numero do download: " + livro.numeroDowloads());
 
     }
 

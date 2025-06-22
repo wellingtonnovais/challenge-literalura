@@ -11,7 +11,7 @@ public class Menus {
             3- Listar autores registrados
             4- Listar autores vivos em um determinado periodo
             5- Listar livros em um determindo indioma
-            6- Sair
+            0- Sair
             °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
             
             """;
