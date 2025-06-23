@@ -28,7 +28,7 @@ public class Menus {
             """;
 
     private String apresentacaoResposta1 = "\n°°°°°°°°°° LIVRO °°°°°°°°°°";
-    private String apresentacaoResposta2 = "\n°°°°°°°°°°°°°°°°°°°°°°°°°°°";
+    private String apresentacaoResposta2 = "°°°°°°°°°°°°°°°°°°°°°°°°°°°\n";
 
     public String getMenuPrincipal() {
         return menuPrincipal;
