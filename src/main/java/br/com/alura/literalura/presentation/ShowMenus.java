@@ -6,7 +6,6 @@ import br.com.alura.literalura.service.Links;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.InputMismatchException;
-import java.util.List;
 import java.util.Scanner;
 
 @SpringBootApplication

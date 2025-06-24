@@ -23,13 +23,13 @@ public class CallApi implements CommandLineRunner {
         RespostaApi resposta = coversorDeDados.obterDadodos(json, RespostaApi.class);
 
         DadosLivro livro = resposta.resultado().get(0);
-        DadosAutores autores = livro.autores().get(0);
-        String indioma = livro.lingagens().get(0);
+        DadosAutores autores = livro.getAutores().get(0);
+        String indioma = livro.getLinguagens().get(0);
 
-        System.out.println("Titulo: " + livro.titulo());
-        System.out.println("Autor: " + autores.nome());
+        System.out.println("Titulo: " + livro.getTitulo());
+        System.out.println("Autor: " + autores.getNome());
         System.out.println("Indioma: " + indioma);
-        System.out.println("Numero do download: " + livro.numeroDowloads());
+        System.out.println("Numero do download: " + livro.getNumeroDowloads());
 
     }
 
