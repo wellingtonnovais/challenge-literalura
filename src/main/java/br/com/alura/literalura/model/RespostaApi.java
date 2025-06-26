@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record RespostaApi(@JsonAlias("count")int numero,
-                          @JsonAlias("results")List<DadosLivro> resultado){
+public record RespostaApi(@JsonAlias("results")List<DadosLivros> resultado){
 
 }

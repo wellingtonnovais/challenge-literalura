@@ -6,11 +6,11 @@ public class Menus {
             °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
             ESCOLHA O NÚMERO DA OPÇÃO DESEJADA
             
-            1- Buscar livro pelo titulo
+            1- Buscar livro pelo título
             2- Listar livros registrados
             3- Listar autores registrados
-            4- Listar autores vivos em um determinado periodo
-            5- Listar livros em um determindo indioma
+            4- Listar autores vivos em um determinado período
+            5- Listar livros em um determinado indioma
             0- Sair
             °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°
             
