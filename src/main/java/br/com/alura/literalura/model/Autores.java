@@ -19,8 +19,10 @@ public class Autores {
 
     private Integer morte;
 
-    @Transient
+    @OneToMany(mappedBy = "autor")
     private List<Livro> dadosLivros = new ArrayList<>();
+
+    public Autores() {}
 
     public Autores(String nome, Integer nascimento, Integer morte) {
         this.nome = nome;
@@ -67,12 +69,10 @@ public class Autores {
 
     public void setMorte(Integer morte) {this.morte = morte;}
 
-//    public List<Autores> dadosDoAutor(){
-//        ArrayList dados = new ArrayList<>();
-//        dados.add(getId());
-//        dados.add(getNome());
-//        dados.add(getNascimento());
-//        dados.add(getMorte());
-//        return dados;
-//    }
+    @Override
+    public String toString() {
+        return " nome: " + nome + "\n" +
+                " nascimento: " + nascimento + "\n" +
+                " morte: " + morte + "\n";
+    }
 }

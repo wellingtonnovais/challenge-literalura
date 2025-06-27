@@ -7,7 +7,9 @@ import br.com.alura.literalura.service.CallApi;
 import br.com.alura.literalura.service.ConversorDeDados;
 import br.com.alura.literalura.service.Links;
 
+import java.util.Comparator;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Principal extends Menus {
@@ -45,6 +47,7 @@ public class Principal extends Menus {
                         livrosBuscados();
                         break;
                     case 3:
+                        listarAutores();
                         break;
                     case 4:
                         break;
@@ -119,8 +122,6 @@ public class Principal extends Menus {
     private void exibeResultado(Autores autor, Livro livro){
         Menus menus = new Menus();
 
-
-
         System.out.println(menus.getApresentacaoResposta1());
         System.out.println("Título: " + livro.getTitulo());
         System.out.println("Autor: " + autor.getNome());
@@ -129,10 +130,20 @@ public class Principal extends Menus {
         } else {
             System.out.println("Idioma não informado");
         }
-
         System.out.println("Número de downloads: " + livro.getNumeroDowloads());
         System.out.println(menus.getApresentacaoResposta2());
+    }
 
+    private void listarLivrosBuscados(){
+
+    }
+
+    private void listarAutores() throws Exception {
+        List<Autores> autoresRegistrados = repositorio.findAll();
+        autoresRegistrados.stream()
+                .sorted(Comparator.comparing(Autores::getNome))
+                .forEach(System.out::println);
+        exibeMenu();
     }
 
 }

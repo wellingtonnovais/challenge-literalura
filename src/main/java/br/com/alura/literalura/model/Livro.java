@@ -1,8 +1,16 @@
 package br.com.alura.literalura.model;
 
+import jakarta.persistence.*;
+
 import java.util.List;
 
+@Entity
+@Table(name = "livros")
 public class Livro {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
 
     private int numeroDowloads;
 
@@ -12,11 +20,29 @@ public class Livro {
 
     private List<String> linguagens;
 
+    @ManyToOne
+    private Autores autor;
+
     public Livro() {}
 
     public Livro(String titulo, int numeroDowloads, List<String> linguagens) {
     }
 
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
+    }
+
+    public Autores getAutor() {
+        return autor;
+    }
+
+    public void setAutor(Autores autor) {
+        this.autor = autor;
+    }
 
     public List<String> getLinguagens() {
         return linguagens;
