@@ -103,14 +103,13 @@ public class Principal extends Menus {
         for (DadosLivros livro : resposta.resultado()) {
             for (DadosAutores dadosAutor : livro.autores()) {
                 Autores autor = dadosAutor.toEntityAutor();
-                Livro livro1 = livro.toEntityLivro();
-                exibeResultado(autor, livro1);
+                Livro dadosLivro = livro.toEntityLivro();
+                exibeResultado(autor, dadosLivro);
 
-                if (!repositorio.existsByNome(autor.getNome())) {
+                if (!repositorio.existsByNome(livro.titulo())) {
                     repositorio.save(autor);
-                    System.out.println("Autor salvo: " + autor.getNome());
                 } else {
-                    System.out.println("Autor já existe: " + autor.getNome());
+                    System.out.println("Este livro já foi pesquisado antes, e inserido no banco de dados: " + autor.getNome());
                 }
             }
         }
@@ -120,10 +119,17 @@ public class Principal extends Menus {
     private void exibeResultado(Autores autor, Livro livro){
         Menus menus = new Menus();
 
+
+
         System.out.println(menus.getApresentacaoResposta1());
         System.out.println("Título: " + livro.getTitulo());
         System.out.println("Autor: " + autor.getNome());
-        System.out.println("Indioma: " + livro.getLinguagens().getFirst());
+        if (livro.getLinguagens() != null && !livro.getLinguagens().isEmpty()) {
+            System.out.println("Idioma: " + livro.getLinguagens().get(0));
+        } else {
+            System.out.println("Idioma não informado");
+        }
+
         System.out.println("Número de downloads: " + livro.getNumeroDowloads());
         System.out.println(menus.getApresentacaoResposta2());
 

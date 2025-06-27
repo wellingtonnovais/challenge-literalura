@@ -11,7 +11,11 @@ public record DadosLivros(@JsonAlias("download_count") int numeroDowloads,
                           @JsonAlias("authors") List<DadosAutores> autores,
                           @JsonAlias("languages") List<String> linguagens){
 
-    public Livro toEntityLivro(){
-        return new Livro(titulo, numeroDowloads,linguagens);
+    public Livro toEntityLivro() {
+        Livro livro = new Livro();
+        livro.setTitulo(this.titulo());
+        livro.setNumeroDowloads(this.numeroDowloads());
+        livro.setLinguagens(this.linguagens());
+        return livro;
     }
 };

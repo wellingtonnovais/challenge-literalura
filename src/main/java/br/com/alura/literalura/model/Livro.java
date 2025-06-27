@@ -12,6 +12,8 @@ public class Livro {
 
     private List<String> linguagens;
 
+    public Livro() {}
+
     public Livro(String titulo, int numeroDowloads, List<String> linguagens) {
     }
 
