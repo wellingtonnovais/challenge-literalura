@@ -47,7 +47,7 @@ public class Principal extends Menus {
                         buscaLivro();
                         break;
                     case 2:
-                        livrosBuscados();
+                        listarLivrosBuscados();
                         break;
                     case 3:
                         listarAutores();
@@ -55,8 +55,7 @@ public class Principal extends Menus {
                     case 4:
                         break;
                     case 5:
-                        getMenuIndioma();
-                        scanner.nextLine();
+                        listarLivrosPorIdioma();
                         break;
                     case 0:
                         setEscolha(0);
@@ -89,17 +88,6 @@ public class Principal extends Menus {
             System.out.println("Problema ao inserir o livro: " + e);
             exibeMenu();
         }
-    }
-
-    private void livrosBuscados() throws Exception {
-
-        System.out.println(getApresentacaoResposta1());
-
-        System.out.println(Livro.class);
-
-        System.out.println(getApresentacaoResposta2());
-
-        exibeMenu();
     }
 
     public void salvaNoBanco() throws Exception {
@@ -156,8 +144,28 @@ public class Principal extends Menus {
         System.out.println(menus.getApresentacaoResposta2());
     }
 
-    private void listarLivrosBuscados(){
+    private void listarLivrosBuscados() throws Exception {
+        List<Livro> livrosRegistrados = repositorioLivros.findAllComAutorELinguagens();
 
+        livrosRegistrados.stream()
+                .sorted(Comparator.comparing(Livro::getTitulo))
+                .forEach(livro -> {
+                    System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                    System.out.println("Título: " + livro.getTitulo());
+                    System.out.println("Autor: " + (livro.getAutor() != null ? livro.getAutor().getNome() : "Autor desconhecido"));
+
+                    List<String> idiomas = livro.getLinguagens();
+                    if (idiomas != null && !idiomas.isEmpty()) {
+                        System.out.println("Idioma: " + String.join(", ", idiomas));
+                    } else {
+                        System.out.println("Idioma: não informado");
+                    }
+
+                    System.out.println("Número de downloads: " + livro.getNumeroDowloads());
+                    System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                });
+
+        exibeMenu();
     }
 
     private void listarAutores() throws Exception {
@@ -167,6 +175,38 @@ public class Principal extends Menus {
                 .forEach(System.out::println);
         exibeMenu();
     }
+
+    private void listarLivrosPorIdioma() throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(getMenuIndioma());
+        System.out.print("Digite o código do idioma (ex: en, pt, es, fr): ");
+        String idioma = scanner.nextLine().trim().toLowerCase();
+
+        List<Livro> livrosRegistrados = repositorioLivros.findAllComAutorELinguagens();
+
+        List<Livro> livrosFiltrados = livrosRegistrados.stream()
+                .filter(livro -> livro.getLinguagens() != null && livro.getLinguagens().contains(idioma))
+                .sorted(Comparator.comparing(Livro::getTitulo))
+                .toList();
+
+        if (livrosFiltrados.isEmpty()) {
+            System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+            System.out.println("Nenhum livro encontrado no idioma informado.");
+            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+        } else {
+            livrosFiltrados.forEach(livro -> {
+                System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                System.out.println("Título: " + livro.getTitulo());
+                System.out.println("Autor: " + (livro.getAutor() != null ? livro.getAutor().getNome() : "Desconhecido"));
+                System.out.println("Idioma(s): " + String.join(", ", livro.getLinguagens()));
+                System.out.println("Número de downloads: " + livro.getNumeroDowloads());
+                System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+            });
+        }
+
+        exibeMenu();
+    }
+
 }
 
 
