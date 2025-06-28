@@ -11,4 +11,4 @@ public record DadosAutores(@JsonAlias("name") String nome,
     public Autores toEntityAutor() {
         return new Autores(nome, nascimento, morte);
     }
-};
+}

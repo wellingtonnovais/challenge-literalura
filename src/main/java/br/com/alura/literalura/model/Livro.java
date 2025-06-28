@@ -16,11 +16,11 @@ public class Livro {
 
     private String titulo;
 
-    private List<Autores> autores;
-
+    @ElementCollection
     private List<String> linguagens;
 
     @ManyToOne
+    @JoinColumn(name = "autor_id")
     private Autores autor;
 
     public Livro() {}
@@ -52,14 +52,6 @@ public class Livro {
         this.linguagens = linguagens;
     }
 
-    public List<Autores> getAutores() {
-        return autores;
-    }
-
-    public void setAutores(List<Autores> autores) {
-        this.autores = autores;
-    }
-
     public String getTitulo() {
         return titulo;
     }
@@ -76,4 +68,14 @@ public class Livro {
         this.numeroDowloads = numeroDowloads;
     }
 
+    @Override
+    public String toString() {
+        return "Livro{" +
+                "Id=" + Id +
+                ", numeroDowloads=" + numeroDowloads +
+                ", titulo='" + titulo + '\'' +
+                ", linguagens=" + linguagens +
+                ", autor=" + autor +
+                '}';
+    }
 }

@@ -3,6 +3,7 @@ package br.com.alura.literalura.principal;
 import br.com.alura.literalura.model.*;
 import br.com.alura.literalura.presentation.Menus;
 import br.com.alura.literalura.repository.AutoresRepository;
+import br.com.alura.literalura.repository.LivrosRepository;
 import br.com.alura.literalura.service.CallApi;
 import br.com.alura.literalura.service.ConversorDeDados;
 import br.com.alura.literalura.service.Links;
@@ -17,10 +18,12 @@ public class Principal extends Menus {
     Links links = new Links();
     private int escolha = -1;
     private final AutoresRepository repositorio;
+    private final LivrosRepository repositorioLivros;
     private String json;
 
-    public Principal(AutoresRepository repositorio) {
+    public Principal(AutoresRepository repositorio, LivrosRepository repositorioLivros) {
         this.repositorio = repositorio;
+        this.repositorioLivros = repositorioLivros;
     }
 
     public int getEscolha() {
@@ -81,7 +84,6 @@ public class Principal extends Menus {
             CallApi callApi = new CallApi(links.getGUTENDEX_URL() + livroDigitado);
             json = callApi.resultadoApi();
             salvaNoBanco();
-            //exibeResultado();
             exibeMenu();
         } catch (RuntimeException e) {
             System.out.println("Problema ao inserir o livro: " + e);
@@ -103,21 +105,41 @@ public class Principal extends Menus {
     public void salvaNoBanco() throws Exception {
         RespostaApi resposta = new ConversorDeDados().obterDadodos(json, RespostaApi.class);
 
-        for (DadosLivros livro : resposta.resultado()) {
-            for (DadosAutores dadosAutor : livro.autores()) {
-                Autores autor = dadosAutor.toEntityAutor();
-                Livro dadosLivro = livro.toEntityLivro();
-                exibeResultado(autor, dadosLivro);
+        // Verifica se a resposta possui ao menos um livro
+        if (!resposta.resultado().isEmpty()) {
+            DadosLivros dadosLivro = resposta.resultado().get(0); //salva apenas o primeiro livro
 
-                if (!repositorio.existsByNome(livro.titulo())) {
-                    repositorio.save(autor);
+            for (DadosAutores dadosAutor : dadosLivro.autores()) {
+                Autores autor;
+
+                // Verifica se o autor já está salvo no banco
+                var autorOptional = repositorio.findByNome(dadosAutor.nome());
+                if (autorOptional.isPresent()) {
+                    autor = autorOptional.get();
                 } else {
-                    System.out.println("Este livro já foi pesquisado antes, e inserido no banco de dados: " + autor.getNome());
+                    autor = dadosAutor.toEntityAutor();
+                    repositorio.save(autor);
                 }
-            }
-        }
 
+                // Cria a entidade Livro e seta o autor
+                Livro livro = dadosLivro.toEntityLivro();
+                livro.setAutor(autor);
+
+                // Salva o livro somente se ainda não existir
+                if (!repositorioLivros.existsByTitulo(livro.getTitulo())) {
+                    repositorioLivros.save(livro);
+                    System.out.println("Livro salvo com sucesso: " + livro.getTitulo());
+                } else {
+                    System.out.println("Livro já existe no banco: " + livro.getTitulo());
+                }
+
+                exibeResultado(autor, livro);
+            }
+        } else {
+            System.out.println("Nenhum livro encontrado para esse título.");
+        }
     }
+
 
     private void exibeResultado(Autores autor, Livro livro){
         Menus menus = new Menus();
@@ -145,7 +167,6 @@ public class Principal extends Menus {
                 .forEach(System.out::println);
         exibeMenu();
     }
-
 }
 
 

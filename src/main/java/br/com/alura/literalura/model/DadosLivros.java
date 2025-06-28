@@ -18,4 +18,5 @@ public record DadosLivros(@JsonAlias("download_count") int numeroDowloads,
         livro.setLinguagens(this.linguagens());
         return livro;
     }
-};
+
+}

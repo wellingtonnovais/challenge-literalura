@@ -19,8 +19,8 @@ public class Autores {
 
     private Integer morte;
 
-    @OneToMany(mappedBy = "autor")
-    private List<Livro> dadosLivros = new ArrayList<>();
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Livro> nomesLivros = new ArrayList<>();
 
     public Autores() {}
 
@@ -30,17 +30,12 @@ public class Autores {
         this.morte = morte;
     }
 
-    public Autores(String titulo, int numeroDowloads) {}
-
-    public Autores(DadosAutores dados) {
+    public List<Livro> getNomesLivros() {
+        return nomesLivros;
     }
 
-    public List<Livro> getDadosLivros() {
-        return dadosLivros;
-    }
-
-    public void setDadosLivros(List<Livro> dadosLivros) {
-        this.dadosLivros = dadosLivros;
+    public void setNomesLivros(List<Livro> nomesLivros) {
+        this.nomesLivros = nomesLivros;
     }
 
     public Long getId() {return id;}
@@ -71,8 +66,15 @@ public class Autores {
 
     @Override
     public String toString() {
-        return " nome: " + nome + "\n" +
-                " nascimento: " + nascimento + "\n" +
-                " morte: " + morte + "\n";
+        StringBuilder livrosFormatados = new StringBuilder();
+        for (Livro livro : nomesLivros) {
+            livrosFormatados.append("- ").append(livro.getTitulo()).append("\n");
+        }
+
+        return "\nAutor: " + nome + "\n" +
+                "Ano de nascimento: " + nascimento + "\n" +
+                "Ano de falecimento: " + (morte != null ? morte : "Vivo") + "\n" +
+                "Livros:\n" + livrosFormatados;
     }
+
 }
