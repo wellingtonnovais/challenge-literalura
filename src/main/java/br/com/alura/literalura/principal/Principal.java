@@ -53,6 +53,7 @@ public class Principal extends Menus {
                         listarAutores();
                         break;
                     case 4:
+                        listarAutoresVivosEmAno();
                         break;
                     case 5:
                         listarLivrosPorIdioma();
@@ -207,8 +208,48 @@ public class Principal extends Menus {
         exibeMenu();
     }
 
+    private void listarAutoresVivosEmAno() throws Exception {
+        Scanner scanner = new Scanner(System.in);
+        int ano = 0;
+
+        try {
+            System.out.print("Digite o ano para verificar quais autores estavam vivos: ");
+            ano = scanner.nextInt();
+
+            if (ano < 0 || ano > 3000) {
+                System.out.println("Por favor, insira um ano válido.");
+                exibeMenu();
+                return;
+            }
+
+            List<Autores> autoresVivos = repositorio.findByNascimentoLessThanEqualAndMorteGreaterThanEqualOrMorteIsNull(ano, ano);
+
+            if (autoresVivos.isEmpty()) {
+                System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                System.out.println("Nenhum autor encontrado vivo no ano " + ano);
+                System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+            } else {
+                autoresVivos.stream()
+                        .sorted(Comparator.comparing(Autores::getNome))
+                        .forEach(autor -> {
+                            System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                            System.out.println("Nome: " + autor.getNome());
+                            System.out.println("Nascimento: " + autor.getNascimento());
+                            System.out.println("Falecimento: " + (autor.getMorte() != null ? autor.getMorte() : "Ainda vivo ou não informado"));
+                            System.out.println("Livros: ");
+                            autor.getNomesLivros().forEach(livro -> {
+                                System.out.println("  - " + livro.getTitulo());
+                            });
+                            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                        });
+            }
+
+        } catch (InputMismatchException e) {
+            System.out.println("Entrada inválida. Por favor, digite um número inteiro.");
+        }
+
+        exibeMenu();
+    }
+
+
 }
-
-
-
-
