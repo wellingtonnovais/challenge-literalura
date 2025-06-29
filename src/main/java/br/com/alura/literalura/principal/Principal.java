@@ -14,12 +14,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Principal extends Menus {
-
-    Links links = new Links();
     private int escolha = -1;
     private final AutoresRepository repositorio;
     private final LivrosRepository repositorioLivros;
     private String json;
+
+    Links links = new Links();
+    Menus menus = new Menus();
 
     public Principal(AutoresRepository repositorio, LivrosRepository repositorioLivros) {
         this.repositorio = repositorio;
@@ -68,8 +69,7 @@ public class Principal extends Menus {
                         break;
                 }
             }
-        }
-        catch (InputMismatchException e){
+        } catch (InputMismatchException e) {
             System.out.println("Por favor, digite apenas números inteiros. ");
             exibeMenu();
         }
@@ -94,14 +94,11 @@ public class Principal extends Menus {
     public void salvaNoBanco() throws Exception {
         RespostaApi resposta = new ConversorDeDados().obterDadodos(json, RespostaApi.class);
 
-        // Verifica se a resposta possui ao menos um livro
         if (!resposta.resultado().isEmpty()) {
-            DadosLivros dadosLivro = resposta.resultado().get(0); //salva apenas o primeiro livro
+            DadosLivros dadosLivro = resposta.resultado().get(0);
 
             for (DadosAutores dadosAutor : dadosLivro.autores()) {
                 Autores autor;
-
-                // Verifica se o autor já está salvo no banco
                 var autorOptional = repositorio.findByNome(dadosAutor.nome());
                 if (autorOptional.isPresent()) {
                     autor = autorOptional.get();
@@ -110,39 +107,26 @@ public class Principal extends Menus {
                     repositorio.save(autor);
                 }
 
-                // Cria a entidade Livro e seta o autor
                 Livro livro = dadosLivro.toEntityLivro();
                 livro.setAutor(autor);
 
-                // Salva o livro somente se ainda não existir
                 if (!repositorioLivros.existsByTitulo(livro.getTitulo())) {
                     repositorioLivros.save(livro);
-                    System.out.println("Livro salvo com sucesso: " + livro.getTitulo());
+                    System.out.println("\nLivro salvo com sucesso: " + livro.getTitulo());
                 } else {
-                    System.out.println("Livro já existe no banco: " + livro.getTitulo());
+                    System.out.println("\nLivro já existe no banco: " + livro.getTitulo());
                 }
 
-                exibeResultado(autor, livro);
+                exibeResultado(livro);
             }
         } else {
-            System.out.println("Nenhum livro encontrado para esse título.");
+            System.out.println("\nNenhum livro encontrado para esse título.");
         }
     }
 
-
-    private void exibeResultado(Autores autor, Livro livro){
-        Menus menus = new Menus();
-
+    private void exibeResultado(Livro livro) {
         System.out.println(menus.getApresentacaoResposta1());
-        System.out.println("Título: " + livro.getTitulo());
-        System.out.println("Autor: " + autor.getNome());
-        if (livro.getLinguagens() != null && !livro.getLinguagens().isEmpty()) {
-            System.out.println("Idioma: " + livro.getLinguagens().get(0));
-        } else {
-            System.out.println("Idioma não informado");
-        }
-        System.out.println("Número de downloads: " + livro.getNumeroDowloads());
-        System.out.println(menus.getApresentacaoResposta2());
+        exibirInformacoesDoLivro(livro);
     }
 
     private void listarLivrosBuscados() throws Exception {
@@ -150,21 +134,7 @@ public class Principal extends Menus {
 
         livrosRegistrados.stream()
                 .sorted(Comparator.comparing(Livro::getTitulo))
-                .forEach(livro -> {
-                    System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
-                    System.out.println("Título: " + livro.getTitulo());
-                    System.out.println("Autor: " + (livro.getAutor() != null ? livro.getAutor().getNome() : "Autor desconhecido"));
-
-                    List<String> idiomas = livro.getLinguagens();
-                    if (idiomas != null && !idiomas.isEmpty()) {
-                        System.out.println("Idioma: " + String.join(", ", idiomas));
-                    } else {
-                        System.out.println("Idioma: não informado");
-                    }
-
-                    System.out.println("Número de downloads: " + livro.getNumeroDowloads());
-                    System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
-                });
+                .forEach(this::exibirInformacoesDoLivro);
 
         exibeMenu();
     }
@@ -191,18 +161,11 @@ public class Principal extends Menus {
                 .toList();
 
         if (livrosFiltrados.isEmpty()) {
-            System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+            System.out.println(menus.linhaPontilhadaMenu(1));
             System.out.println("Nenhum livro encontrado no idioma informado.");
-            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+            System.out.println(menus.linhaPontilhadaMenu(2));
         } else {
-            livrosFiltrados.forEach(livro -> {
-                System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
-                System.out.println("Título: " + livro.getTitulo());
-                System.out.println("Autor: " + (livro.getAutor() != null ? livro.getAutor().getNome() : "Desconhecido"));
-                System.out.println("Idioma(s): " + String.join(", ", livro.getLinguagens()));
-                System.out.println("Número de downloads: " + livro.getNumeroDowloads());
-                System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
-            });
+            livrosFiltrados.forEach(this::exibirInformacoesDoLivro);
         }
 
         exibeMenu();
@@ -225,22 +188,20 @@ public class Principal extends Menus {
             List<Autores> autoresVivos = repositorio.findByNascimentoLessThanEqualAndMorteGreaterThanEqualOrMorteIsNull(ano, ano);
 
             if (autoresVivos.isEmpty()) {
-                System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                System.out.println(menus.linhaPontilhadaMenu(1));
                 System.out.println("Nenhum autor encontrado vivo no ano " + ano);
-                System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                System.out.println(menus.linhaPontilhadaMenu(2));
             } else {
                 autoresVivos.stream()
                         .sorted(Comparator.comparing(Autores::getNome))
                         .forEach(autor -> {
-                            System.out.println("\n°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                            System.out.println(menus.linhaPontilhadaMenu(1));
                             System.out.println("Nome: " + autor.getNome());
                             System.out.println("Nascimento: " + autor.getNascimento());
                             System.out.println("Falecimento: " + (autor.getMorte() != null ? autor.getMorte() : "Ainda vivo ou não informado"));
                             System.out.println("Livros: ");
-                            autor.getNomesLivros().forEach(livro -> {
-                                System.out.println("  - " + livro.getTitulo());
-                            });
-                            System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°");
+                            autor.getNomesLivros().forEach(livro -> System.out.println("  - " + livro.getTitulo()));
+                            System.out.println(menus.linhaPontilhadaMenu(2));
                         });
             }
 
@@ -251,5 +212,19 @@ public class Principal extends Menus {
         exibeMenu();
     }
 
+    private void exibirInformacoesDoLivro(Livro livro) {
+        System.out.println(menus.linhaPontilhadaMenu(1));
+        System.out.println("Título: " + livro.getTitulo());
+        System.out.println("Autor: " + (livro.getAutor() != null ? livro.getAutor().getNome() : "Autor desconhecido"));
 
+        List<String> idiomas = livro.getLinguagens();
+        if (idiomas != null && !idiomas.isEmpty()) {
+            System.out.println("Idioma: " + String.join(", ", idiomas));
+        } else {
+            System.out.println("Idioma: não informado");
+        }
+
+        System.out.println("Número de downloads: " + livro.getNumeroDowloads());
+        System.out.println(menus.linhaPontilhadaMenu(2));
+    }
 }
