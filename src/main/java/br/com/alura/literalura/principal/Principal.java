@@ -91,11 +91,11 @@ public class Principal extends Menus {
         }
     }
 
-    public void salvaNoBanco() throws Exception {
+    public void salvaNoBanco() {
         RespostaApi resposta = new ConversorDeDados().obterDadodos(json, RespostaApi.class);
 
         if (!resposta.resultado().isEmpty()) {
-            DadosLivros dadosLivro = resposta.resultado().get(0);
+            DadosLivros dadosLivro = resposta.resultado().getFirst();
 
             for (DadosAutores dadosAutor : dadosLivro.autores()) {
                 Autores autor;
@@ -173,7 +173,7 @@ public class Principal extends Menus {
 
     private void listarAutoresVivosEmAno() throws Exception {
         Scanner scanner = new Scanner(System.in);
-        int ano = 0;
+        int ano;
 
         try {
             System.out.print("Digite o ano para verificar quais autores estavam vivos: ");

@@ -16,7 +16,7 @@ public class LiteraluraApplication implements CommandLineRunner {
 	@Autowired
 	private LivrosRepository repositorioLivros;
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		org.springframework.boot.SpringApplication.run(LiteraluraApplication.class, args);
 	}
 

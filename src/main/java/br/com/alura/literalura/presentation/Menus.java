@@ -28,7 +28,6 @@ public class Menus {
             """;
 
     private String apresentacaoResposta1 = "\n°°°°°°°°°° LIVRO °°°°°°°°°°";
-    private String apresentacaoResposta2 = "°°°°°°°°°°°°°°°°°°°°°°°°°°°\n";
 
     public String linhaPontilhadaMenu (int numeroDaLinha) {
         if (numeroDaLinha == 1) {
@@ -48,10 +47,6 @@ public class Menus {
 
     public String getApresentacaoResposta1() {
         return apresentacaoResposta1;
-    }
-
-    public String getApresentacaoResposta2() {
-        return apresentacaoResposta2;
     }
 
 }
